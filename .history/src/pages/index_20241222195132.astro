@@ -5,14 +5,19 @@ import { SITE, HOME, SOCIALS } from "@consts";
 import ArrowCard from "@components/ArrowCard.astro";
 import Link from "@components/Link.astro";
 import { getCollection } from "astro:content";
-
+import type { CollectionEntry } from "astro:content";
 
 const blog = (await getCollection("blog"))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, SITE.NUM_POSTS_ON_HOMEPAGE);
 
-
+const projects: CollectionEntry<"projects">[] = (
+  await getCollection("projects")
+)
+  .filter((project) => !project.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, SITE.NUM_PROJECTS_ON_HOMEPAGE);
 ---
 
 <Layout title={HOME.TITLE} description={HOME.DESCRIPTION}>
@@ -31,10 +36,7 @@ const blog = (await getCollection("blog"))
                 Today, I delve into various fields such as DevOps, DevSysOps, and technical writing, always fueled by the same insatiable curiosity. This blog is a space dedicated to my technical adventures: from CTFs (Capture The Flag) I’ve solved to the 0days I’ve uncovered, along with tips and tricks for cybersecurity and IT enthusiasts.
               </p>
             </span>
-            <span>
-
-              This blog is powered by Astro. The minimalistic style is assumed. The less CDN and other shit are used, the less your fingerprints are served all around. Trust me. 
-            </span>
+            
           </article>
         </section>
 
@@ -56,10 +58,27 @@ const blog = (await getCollection("blog"))
           </ul>
         </section>
 
-     
+        <section class="animate space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-y-2">
+            <h2 class="font-semibold text-black dark:text-white">
+              Recent projects
+            </h2>
+            <Link href="/projects"> See all projects </Link>
+          </div>
+          <ul class="not-prose flex flex-col gap-4">
+            {
+              projects.map((project) => (
+                <li>
+                  <ArrowCard entry={project} />
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+
         <section class="animate space-y-4">
           <h2 class="font-semibold text-black dark:text-white">
-            Let's Connect !
+            Let's Connect
           </h2>
           <article>
             <p>

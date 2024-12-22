@@ -1,0 +1,185 @@
+---
+title: "OpenBSD over Tor/I2P"
+description: "OpenBSD, Privacy"
+date: "2024-12-22"
+---
+
+import Callout from "@/components/Callout.astro";
+
+---
+
+## Introduction
+
+For an upcoming privacy related OpenBSD, i needed to setup an access to an OpenBSD mirror both from a Tor Hidden service and I2P.
+The server does not contain any data, it only acts as a proxy fetch files from an random existing OpenBSD mirror. So it does not waste any bandwidth mirroring everything.
+The server doesn't have the storage required anyway. There's a little cache to keep most requested files locally.
+
+[Get informed about I2P Protocol](https://geti2p.net/en/about/intro)
+
+[Or Tor Protocol](https://spec.torproject.org/tor-spec/index.html)
+
+{/* 
+```bash
+# Pagefind must index the site to function
+npm run build
+``` */}
+
+It is only useful if you can not reach OpenBSD mirrors, or if you really need to hide your network activity. Tor or I2P will be much slower than connecting to a mirror using HTTP(s).
+
+However, as they exist now, let me explain how to start using them.
+
+---
+
+## Tor
+
+Using a client with tor proxy enabled, you can reach the following address to download installers or sets.
+
+[Here's an OpenBSD onion mirror](http://kdzlr6wcf5d23chfdwvfwuzm6rstbpzzefkpozp7kjeugtpnrixldxqd.onion/pub/OpenBSD/)
+
+If you want to install or update your packages from tor, you can use the onion address in  ```/etc/installurl```
+However, it will not work for ```sysupgrade``` and ```syspatch```, and you need to export the variable in your environment to make **pkg_** programs able to use the mirror.
+```bash
+FETCH_CMD="/usr/local/bin/curl -L -s -q -N -x socks5h://127.0.0.1:9050"
+```
+To make sysupgrade or syspatch able to use the onion address, you need to have the program torsocks installed, and patch the script to use `torsocks`:
+
+**Sysupgrade** 
+```bash
+sed -i 's,ftp -N,/usr/local/bin/torsocks &,' /usr/sbin/sysupgrade 
+```
+**Syspatch** 
+```bash
+sed -i 's,ftp -N,/usr/local/bin/torsocks &,' /usr/sbin/syspatch
+```
+
+These patches will have to be reapplied after each sysupgrade run.
+
+
+
+{/* [Giscus](https://giscus.app) leverages Github discussions to act as a comments system. To get Giscus working on your own website, see [here](/blog/01-getting-started#deploy-the-site). */}
+
+---
+
+## I2P
+If you have a client with i2p proxy enabled, you can reach the following address to download installers or sets.
+
+[OpenBSD mirror over I2P](http://2st32tfsqjnvnmnmy3e5o5y5hphtgt4b2letuebyv75ohn2w5umq.b32.i2p:8081/pub/OpenBSD/)
+
+If you want to install or update your packages from i2p, install the i2pd package with `pkg_add i2pd`, 
+ edit the file `/etc/i2pd/i2pd.conf` to `set notransit = true` except if you want to act as an i2p relay (high cpu/bandwidth consumption).
+
+Replace the file` /etc/i2pd/tunnels.conf` by the following content (or adapt your current tunnels.conf if you configured it earlier):
+
+```bash
+[MIRROR]
+type = client
+address = 127.0.0.1
+port = 8080
+destination = 2st32tfsqjnvnmnmy3e5o5y5hphtgt4b2letuebyv75ohn2w5umq.b32.i2p
+destinationport = 8081
+keys = mirror.dat
+```
+Now, enable and start i2pd with` rcctl enable i2pd && rcctl start i2pd`.
+
+After a few minutes to let i2pd establish tunnels, you should be able to browse the mirror over i2p using the address http://127.0.0.1:8080/. You can configure the port 8080 to another you prefer by modifying the file tunnels.conf.
+
+You can use the address http://127.0.0.1:8080/pub/OpenBSD/ in` /etc/installurl` to automatically use the I2P mirror for installing/updating packages, or keeping your system up to date with syspatch/sysupgrade.
+
+Note: from experience the I2P mirror works fine to install packages, but did not play well with fw_update, syspatch and sysupgrade, maybe because they use ftp command that seems to easily drop the connection. Downloading the files locally using a proper HTTP client supporting transfer resume would be better. On the other hand, this issue may be related to the current attack the I2P network is facing as of the time of writing (May 2024).
+
+---
+
+
+## Firmware mirror
+
+OpenBSD pulls firmware from a different server than the regular mirrors, the address is http://firmware.openbsd.org/firmware/, the files on this server are signed packages, they can be installed using fw_update $file.
+
+Both i2p and tor hidden service hostname can be reused, you only have to change` /pub/OpenBSD/ `by` /firmware/ `to browse the files.
+
+The proxy server does not cache any firmware, it directly proxy to the genuine firmware web server. They are on a separate server for legal matter, it seems to be a grey area.
+
+---
+
+## Disable firmware.openbsd.org
+
+For maximum privacy, you need to neutralize `firmware.openbsd.org` DNS lookup using a hosts entry. This is important because `fw_update` is automatically used after a system upgrade (as of 2024).
+
+In` /etc/hosts` add the line:
+
+```bash
+127.0.0.9 firmware.openbsd.org
+```
+
+The IP in the snippet above will avoid fw_update to try to connect to a local web server if any.
+
+---
+
+
+
+## Callout component 🆕
+
+<Callout>
+  Adipisicing et officia reprehenderit fugiat occaecat cupidatat exercitation
+  labore consequat ullamco nostrud non.
+</Callout>
+
+<Callout type="info">
+  Adipisicing et officia reprehenderit fugiat occaecat cupidatat exercitation
+  labore consequat ullamco nostrud non.
+</Callout>
+
+<Callout type="warning">
+  Adipisicing et officia reprehenderit fugiat occaecat cupidatat exercitation
+  labore consequat ullamco nostrud non.
+</Callout>
+
+<Callout type="error">
+  Adipisicing et officia reprehenderit fugiat occaecat cupidatat exercitation
+  labore consequat ullamco nostrud non.
+</Callout>
+
+---
+
+## UI enhancements 🎨
+
+- Elements are styled and animate on focus
+- Increased contrast in light mode
+- Active theme is indicated by theme buttons
+- Separate syntax highlight themes for light and dark mode
+- Code blocks have a copy button
+- Add pagination to the bottom of blog posts
+- Create 404 page
+- Add ToC component to posts
+
+---
+
+## Other changes
+
+- Change fonts to Geist Sans and Geist Mono
+- Switch base color from "stone" to "neutral"
+- Change formatted date to use "long" option for month
+- Minor spacing changes throughout
+- Remove "work" collection and components
+  - If desired, you can get the code from [Astro Nano](https://github.com/markhorn-dev/astro-nano)
+- Slightly increased link decoration offset
+- Slightly sped-up animations
+- Reversed animation
+- Ensure posts use an h1 tag for post titles
+- Tweaked typography
+
+---
+
+## Issues ⚠️
+
+### Active issues
+
+- [PostNavigation.astro is broken when deployed with Cloudflare Pages](https://github.com/trevortylerlee/astro-micro/issues/39)
+
+### Closed issues
+
+- Fixed by [blopker](https://github.com/blopker): [Pagefind requires a refresh to function when ViewTransitions is enabled](https://github.com/trevortylerlee/astro-micro/issues/7)
+- Fixed by [blopker](https://github.com/blopker): [ToC links are obscured by Header when scrolled to](https://github.com/trevortylerlee/astro-micro/issues/4)
+- Fixed by [cgranier](https://github.com/cgranier): [Pagination links advance by slug/folder](https://github.com/trevortylerlee/astro-micro/issues/26)
+- Fixed by [cgranier](https://github.com/cgranier): [Hides Table of Contents when there are no headings](https://github.com/trevortylerlee/astro-micro/pull/30)
+- Fixed by [arastoonet](https://github.com/arastoonet): [Fix typo in README](https://github.com/trevortylerlee/astro-micro/pull/19)
+- Fixed by [luciancah](https://github.com/luciancah): [Prevent Pagefind from double-indexing results](https://github.com/trevortylerlee/astro-micro/issues/40)

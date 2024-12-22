@@ -1,0 +1,111 @@
+---
+title: "OpenBSD over Tor/I2P"
+description: "Features, enhancements, and changes."
+date: "2024-12-24"
+---
+
+import Callout from "@/components/Callout.astro";
+
+---
+
+## Introduction
+
+For an upcoming privacy related OpenBSD, i needed to setup an access to an OpenBSD mirror both from a Tor Hidden service and I2P.
+The server does not contain any data, it only acts as a proxy fetch files from an random existing OpenBSD mirror. So it does not waste any bandwidth mirroring everything.
+The server doesn't have the storage required anyway. There's a little cache to keep most requested files locally.
+
+[Get informed about I2P Protocol](https://geti2p.net/en/about/intro)
+
+[Or Tor Protocol](https://spec.torproject.org/tor-spec/index.html)
+
+
+{/* ```bash
+# Pagefind must index the site to function
+npm run build
+``` */}
+
+It is only useful if you can not reach OpenBSD mirrors, or if you really need to hide your network activity. Tor or I2P will be much slower than connecting to a mirror using HTTP(s).
+
+However, as they exist now, let me explain how to start using them.
+
+---
+
+## Tor
+
+Using a client with tor proxy enabled, you can reach the following address to download installers or sets.
+
+[Here's an OpenBSD onion mirror](http://kdzlr6wcf5d23chfdwvfwuzm6rstbpzzefkpozp7kjeugtpnrixldxqd.onion/pub/OpenBSD/)
+
+If you want to install or update your packages from tor, you can use the onion address in  ```/etc/installurl```
+
+[Giscus](https://giscus.app) leverages Github discussions to act as a comments system. To get Giscus working on your own website, see [here](/blog/01-getting-started#deploy-the-site).
+
+---
+
+## Callout component 🆕
+
+<Callout>
+  Adipisicing et officia reprehenderit fugiat occaecat cupidatat exercitation
+  labore consequat ullamco nostrud non.
+</Callout>
+
+<Callout type="info">
+  Adipisicing et officia reprehenderit fugiat occaecat cupidatat exercitation
+  labore consequat ullamco nostrud non.
+</Callout>
+
+<Callout type="warning">
+  Adipisicing et officia reprehenderit fugiat occaecat cupidatat exercitation
+  labore consequat ullamco nostrud non.
+</Callout>
+
+<Callout type="error">
+  Adipisicing et officia reprehenderit fugiat occaecat cupidatat exercitation
+  labore consequat ullamco nostrud non.
+</Callout>
+
+---
+
+## UI enhancements 🎨
+
+- Elements are styled and animate on focus
+- Increased contrast in light mode
+- Active theme is indicated by theme buttons
+- Separate syntax highlight themes for light and dark mode
+- Code blocks have a copy button
+- Add pagination to the bottom of blog posts
+- Create 404 page
+- Add ToC component to posts
+
+---
+
+## Other changes
+
+- Change fonts to Geist Sans and Geist Mono
+- Switch base color from "stone" to "neutral"
+- Change formatted date to use "long" option for month
+- Minor spacing changes throughout
+- Remove "work" collection and components
+  - If desired, you can get the code from [Astro Nano](https://github.com/markhorn-dev/astro-nano)
+- Slightly increased link decoration offset
+- Slightly sped-up animations
+- Reversed animation
+- Ensure posts use an h1 tag for post titles
+- Tweaked typography
+
+---
+
+## Issues ⚠️
+
+### Active issues
+
+- [PostNavigation.astro is broken when deployed with Cloudflare Pages](https://github.com/trevortylerlee/astro-micro/issues/39)
+
+### Closed issues
+
+- Fixed by [blopker](https://github.com/blopker): [Pagefind requires a refresh to function when ViewTransitions is enabled](https://github.com/trevortylerlee/astro-micro/issues/7)
+- Fixed by [blopker](https://github.com/blopker): [ToC links are obscured by Header when scrolled to](https://github.com/trevortylerlee/astro-micro/issues/4)
+- Fixed by [cgranier](https://github.com/cgranier): [Pagination links advance by slug/folder](https://github.com/trevortylerlee/astro-micro/issues/26)
+- Fixed by [cgranier](https://github.com/cgranier): [Hides Table of Contents when there are no headings](https://github.com/trevortylerlee/astro-micro/pull/30)
+- Fixed by [arastoonet](https://github.com/arastoonet): [Fix typo in README](https://github.com/trevortylerlee/astro-micro/pull/19)
+- Fixed by [luciancah](https://github.com/luciancah): [Prevent Pagefind from double-indexing results](https://github.com/trevortylerlee/astro-micro/issues/40)

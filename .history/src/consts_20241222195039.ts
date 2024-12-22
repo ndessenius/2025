@@ -5,6 +5,7 @@ export const SITE: Site = {
   DESCRIPTION: "Blog written and maintained by Phant0mHex.",
   EMAIL: "phant0mhex@proton.me",
   NUM_POSTS_ON_HOMEPAGE: 5,
+  NUM_PROJECTS_ON_HOMEPAGE: 3,
 };
 
 export const HOME: Metadata = {
@@ -17,14 +18,20 @@ export const BLOG: Metadata = {
   DESCRIPTION: "Last tickets written about stuff",
 };
 
+export const PROJECTS: Metadata = {
+  TITLE: "Projects",
+  DESCRIPTION:
+    "",
+};
+
 export const SOCIALS: Socials = [
   {
-    NAME: "Bluesky",
-    HREF: "",
+    NAME: "X (formerly Twitter)",
+    HREF: "https://twitter.com/boogerbuttcheeks",
   },
   {
     NAME: "GitHub",
-    HREF: "",
+    HREF: "https://github.com/trevortylerlee",
   },
   
 ];
